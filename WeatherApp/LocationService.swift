@@ -71,13 +71,11 @@ extension LocationService: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first else { return }
-        
         onLocationUpdated?(.success(location))
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         onLocationUpdated?(.failure(error))
-//        delegate?.locationServiceDidFailWithError(error)
     }
 }
 

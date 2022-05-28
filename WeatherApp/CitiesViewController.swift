@@ -27,7 +27,6 @@ class CitiesViewController: UIViewController {
         tableView.delegate = self
         setupTableView()
         view.backgroundColor = .systemBackground
-        
     }
     
     private var tableView: UITableView = {
@@ -47,7 +46,6 @@ class CitiesViewController: UIViewController {
             tableView.rightAnchor.constraint(equalTo: view.rightAnchor)
         ])
     }
-    
 }
 
 extension CitiesViewController: UITableViewDelegate, UITableViewDataSource {
@@ -71,5 +69,4 @@ extension CitiesViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
     }
-    
 }

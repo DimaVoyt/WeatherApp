@@ -18,10 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = UINavigationController(rootViewController: MainViewController(weatherService: weatherService))
         window?.makeKeyAndVisible()
-        
         return true
     }
- 
 }
 
 

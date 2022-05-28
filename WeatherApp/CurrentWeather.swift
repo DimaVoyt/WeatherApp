@@ -11,7 +11,6 @@ import UIKit
 struct CurrentWeather: Codable {
     let address: String
     let days: [CurrentWeatherInfo]
-    
 }
 
 struct CurrentWeatherInfo: Codable {
@@ -21,8 +20,6 @@ struct CurrentWeatherInfo: Codable {
     let temp: Double
     let icon: String
 }
-
-
 
 extension CurrentWeatherInfo {
   var pressureString: String {

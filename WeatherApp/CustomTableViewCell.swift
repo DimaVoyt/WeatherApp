@@ -18,13 +18,10 @@ static let identifier = "CustomTableViewCell"
         return label
     }()
     
-
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.backgroundColor = .systemBackground
         setupNamelabel()
-        
     }
     
     required init?(coder: NSCoder) {
@@ -33,7 +30,6 @@ static let identifier = "CustomTableViewCell"
     
     public func configure(with text: String) {
         myNameLabel.text = text
-
     }
     
     override func prepareForReuse() {
@@ -41,11 +37,8 @@ static let identifier = "CustomTableViewCell"
         myNameLabel.text = nil
     }
     
-
-    
     func setupNamelabel() {
         contentView.addSubview(myNameLabel)
-        
         myNameLabel.centerYAnchor.constraint(equalTo:self.contentView.centerYAnchor).isActive = true
         myNameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant:10).isActive = true
             myNameLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant:-10).isActive = true

@@ -12,94 +12,6 @@ class MainViewController: UIViewController {
     
     private let locationService = LocationService()
     
-    init(weatherService: WeatherService) {
-        self.weatcherService = weatherService
-        
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        configureAllConstraints()
-
-        getCurrentWeather()
-        let image = UIImage(systemName: "tortoise.fill")
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(didTapButton))
-        navigationController?.navigationBar.tintColor = .systemIndigo
-        
-        weatcherService.weatherDidChange = { [weak self] in
-            guard let self = self else { return }
-            
-            self.getCurrentWeather()
-        }
-        
-        locationService.delegate = self
-        
-        locationService.onLocationUpdated = { [weak self] result in
-            guard let self = self else { return }
-            
-            
-            switch result {
-            case .success(let location):
-                location.fetchCityAndCountry { [weak self] city, country, error in
-                    guard let self = self else { return }
-                    
-                    guard let city = city, let country = country, error == nil else { return }
-                    print(city + "," + country)
-                    let cityAndCountry = city + "," + country
-                    self.weatcherService.city = cityAndCountry
-                }
-            case .failure(let error):
-                if let locationError = error as? LocationError {
-                    switch locationError {
-                    case .resticted:
-                        //...
-                        break
-                    case .denied:
-                        //...
-                        break
-                    }
-                } else {
-                    
-                }
-            }
-        }
-        
-        locationService.requestLocation()
-    }
-    
-    @objc func didTapButton() {
-        let citiesViewController = CitiesViewController(weatherService: weatcherService)
-        navigationController?.pushViewController(citiesViewController, animated: true)
-    }
-    
-    
-    private func getCurrentWeather() {
-        weatcherService.getWeatherInfo { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let info):
-                self.cityNameLabel.text = info.address
-                self.weatherImage.image = UIImage(named: info.days.first?.icon ?? "unpredicted-icon")
-                self.feelsLikeLabel.text = info.days.first?.feelslikeString
-                self.tempLabel.text = info.days.first?.tempString
-                self.moistnessLabel.text = info.days.first?.humidityString
-                self.precipitationLabel.text = info.days.first?.pressureString
-                print(info)
-            case .failure(let error):
-                print(error)
-            }
-        }
-    }
-    
-    
-    
     let cityNameLabel: UILabel = {
        let label = UILabel()
         label.tintColor = .black
@@ -156,6 +68,76 @@ class MainViewController: UIViewController {
         return label
     }()
     
+    init(weatherService: WeatherService) {
+        self.weatcherService = weatherService
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .systemBackground
+        configureAllConstraints()
+        getCurrentWeather()
+        let image = UIImage(systemName: "tortoise.fill")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(didTapButton))
+        navigationController?.navigationBar.tintColor = .systemIndigo
+        weatcherService.weatherDidChange = { [weak self] in
+            guard let self = self else { return }
+            self.getCurrentWeather()
+        }
+        locationService.delegate = self
+        locationService.onLocationUpdated = { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let location):
+                location.fetchCityAndCountry { [weak self] city, country, error in
+                    guard let self = self else { return }
+                    guard let city = city, let country = country, error == nil else { return }
+                    print(city + "," + country)
+                    let cityAndCountry = city + "," + country
+                    self.weatcherService.city = cityAndCountry
+                }
+            case .failure(let error):
+                if let locationError = error as? LocationError {
+                    switch locationError {
+                    case .resticted:
+                        break
+                    case .denied:
+                        break
+                    }
+                }
+            }
+        }
+        locationService.requestLocation()
+    }
+    
+    @objc func didTapButton() {
+        let citiesViewController = CitiesViewController(weatherService: weatcherService)
+        navigationController?.pushViewController(citiesViewController, animated: true)
+    }
+    
+    private func getCurrentWeather() {
+        weatcherService.getWeatherInfo { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let info):
+                self.cityNameLabel.text = info.address
+                self.weatherImage.image = UIImage(named: info.days.first?.icon ?? "unpredicted-icon")
+                self.feelsLikeLabel.text = info.days.first?.feelslikeString
+                self.tempLabel.text = info.days.first?.tempString
+                self.moistnessLabel.text = info.days.first?.humidityString
+                self.precipitationLabel.text = info.days.first?.pressureString
+                print(info)
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
     private func configureAllConstraints() {
         
         view.addSubview(cityNameLabel)
@@ -188,17 +170,13 @@ class MainViewController: UIViewController {
         tempLabel.bottomAnchor.constraint(equalTo: feelsLikeLabel.topAnchor).isActive = true
         tempLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         tempLabel.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        
-     
     }
-    
 }
 
 extension MainViewController: LocationServiceDelegate {
     func locationServiceDidUpdateLocation(_ location: LocationResponse) {
         
     }
-    
     func locationServiceDidFailWithError(_ error: Error) {
         
     }

@@ -13,12 +13,10 @@ enum Constants {
     static let baseURL = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/"
     static let API_KEY = "NDX96Z8PSNFFYRA5VKX7GSQ58"
     static let include = "&include=obs%2Cfcst%2Cstats%2Calerts%2Ccurrent%2Chistfcst&elements=feelslike,temp,icon,pressure,humidity"
-    
 }
 
 final class APICaller {
     static let shared = APICaller()
-    
     
     func getCurrentWeather(city: String,
                            day: String,
@@ -29,7 +27,6 @@ final class APICaller {
             guard let data = data, error == nil else {
                 return
             }
-            
             do {
                 let result = try JSONDecoder().decode(CurrentWeather.self, from: data)
                 DispatchQueue.main.async {
@@ -40,11 +37,7 @@ final class APICaller {
                     completion( .failure(error))
                 }
             }
-            
-            
         }
         task.resume()
     }
-    
-    
 }
